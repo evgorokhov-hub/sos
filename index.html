@@ -11,7 +11,7 @@
 document.getElementById('f').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('sos');b.disabled=true;
 const fd=new FormData(e.target);if(fd.get('botcheck'))return;
 const d={_subject:"SOS",_template:"table",_captcha:"false",message:fd.get('message')||"(без текста)",page_time:new Date().toString()};
-try{const r=await fetch("https://formsubmit.co/ajax/gorokhov@mail.grokbot.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});const j=await r.json();
+try{const r=await fetch("https://formsubmit.co/ajax/evgorokhov@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});const j=await r.json();
 if(j.success===true||j.success==="true"){document.getElementById('form').style.display='none';document.getElementById('ok').style.display='block';}else throw 0;}
 catch(x){b.disabled=false;document.getElementById('err').innerHTML='Не удалось отправить. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо</a>.';}};
 </script></main></body></html>
