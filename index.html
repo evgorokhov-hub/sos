@@ -1,28 +1,38 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>SOS — Евгений Горохов</title>
-<style>body{margin:0;font-family:system-ui,sans-serif;background:#fff;color:#111;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}main{width:100%;max-width:480px;padding:24px}h1{font-size:1.4em}textarea{width:100%;box-sizing:border-box;font-size:1.1em;padding:12px;border:2px solid #ccc;border-radius:10px;min-height:110px}#sos{width:220px;height:220px;border-radius:50%;border:0;background:#d00;color:#fff;font-size:3.2em;font-weight:800;margin:24px auto;display:block;box-shadow:0 6px 20px rgba(200,0,0,.4)}#sos:disabled{opacity:.6}.hp{position:absolute;left:-9999px}#ok{display:none}#ok h1{color:#080;font-size:1.8em}.fb{font-size:.95em;color:#555}a{color:#d00}#arch{display:none;text-align:left;margin-top:20px;border:2px solid #ccc;border-radius:10px;padding:16px}#arch .big{display:block;text-align:center;background:#d00;color:#fff;text-decoration:none;font-size:1.3em;font-weight:700;padding:16px;border-radius:10px;margin-bottom:12px}#arch ol{padding-left:20px;margin:0}#arch li{margin:6px 0}#arch form .big{margin-bottom:0}</style></head><body><main>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:#fff;color:#111;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}main{width:100%;max-width:480px;padding:24px}h1{font-size:1.4em}textarea,input[type=password]{width:100%;box-sizing:border-box;font-size:1.1em;padding:12px;border:2px solid #ccc;border-radius:10px}textarea{min-height:110px}#sos{width:220px;height:220px;border-radius:50%;border:0;background:#d00;color:#fff;font-size:3.2em;font-weight:800;margin:24px auto;display:block;box-shadow:0 6px 20px rgba(200,0,0,.4)}#sos:disabled{opacity:.6}.hp{position:absolute;left:-9999px}#ok{display:none}#ok h1{color:#080;font-size:1.8em}.fb{font-size:.95em;color:#555}a{color:#d00}.big{display:block;width:100%;box-sizing:border-box;text-align:center;background:#d00;color:#fff;border:0;cursor:pointer;text-decoration:none;font-size:1.3em;font-weight:700;padding:16px;border-radius:10px;margin:12px 0}#form{display:none}#ac{text-align:left;border:2px solid #ccc;border-radius:10px;padding:16px;margin-top:16px}#ac:empty{display:none}#ac ol{padding-left:20px;margin:0}#ac li{margin:6px 0}#st{font-size:.95em;color:#555}</style></head><body><main>
+<div id="lock"><h1>Введите пароль для доступа к семейному архиву</h1>
+<form id="lk"><input id="pw" type="password" autocomplete="off" autofocus><button type="submit" class="big" id="lb">Открыть</button></form>
+<p id="pe" style="color:#d00"></p>
+<p class="fb"><a href="#" id="nopw">Отправить SOS без пароля</a></p></div>
+<p id="st"></p><div id="ac"></div>
 <div id="form"><h1>Экстренный сигнал для помощника Евгения</h1>
 <form id="f"><textarea name="message" placeholder="Что случилось / кто вы (необязательно)"></textarea>
 <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off">
 <button id="sos" type="submit">SOS</button></form>
 <p id="err" style="color:#d00"></p>
-<p class="fb">Если кнопка не работает: <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">написать письмо с темой SOS</a></p></div>
+<p class="fb">Если кнопка не работает: <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">написать письмо с темой SOS</a></p>
+<p class="fb"><a href="#" id="back">Назад к вводу пароля</a></p></div>
 <div id="ok"><h1>Сигнал отправлен</h1><p>Помощник Евгения уже действует.</p></div>
-<div id="arch"><form id="lk"><p><b>Введите пароль, чтобы открыть архив</b></p><input id="pw" type="password" autocomplete="off" style="width:100%;box-sizing:border-box;font-size:1.1em;padding:12px;border:2px solid #ccc;border-radius:10px"><button type="submit" class="big" style="width:100%;border:0;margin-top:12px;cursor:pointer">Открыть</button><p id="pe" style="color:#d00"></p></form><div id="ac"></div></div>
 <script>
-
-document.getElementById('f').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('sos');b.disabled=true;
+const $=id=>document.getElementById(id);
+async function sendSOS(msg){const d={_subject:"SOS",_template:"table",_captcha:"false",message:msg,page_time:new Date().toString()};
+const r=await fetch("https://formsubmit.co/ajax/evgorokhov@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});const j=await r.json();
+if(!(j.success===true||j.success==="true"))throw 0;}
+$('nopw').onclick=e=>{e.preventDefault();$('lock').style.display='none';$('form').style.display='block';};
+$('back').onclick=e=>{e.preventDefault();$('form').style.display='none';$('lock').style.display='block';};
+$('f').onsubmit=async e=>{e.preventDefault();const b=$('sos');b.disabled=true;
 const fd=new FormData(e.target);if(fd.get('botcheck'))return;
-const d={_subject:"SOS",_template:"table",_captcha:"false",message:fd.get('message')||"(без текста)",page_time:new Date().toString()};
-try{const r=await fetch("https://formsubmit.co/ajax/evgorokhov@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});const j=await r.json();
-if(j.success===true||j.success==="true"){document.getElementById('form').style.display='none';document.getElementById('ok').style.display='block';showArch('ok');}else throw 0;}
-catch(x){b.disabled=false;document.getElementById('err').innerHTML='Не удалось отправить. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо</a>.';showArch('form');}};
-function showArch(id){const a=document.getElementById('arch');document.getElementById(id).appendChild(a);a.style.display='block';}
-const P={"s":"PJ//uCu7cvEbT9uuOLSaVQ==","i":"HV0xTEIPfflgCaYw","c":"fCJDYb55s028VwtIN/3JZ9aYRMwGaJV++0rEMk2sxlIyw76AOVt0gXjOlF8KNodqFXXmB4VEuK+tZTNJ6JMWefnMcIczspG2clOmGnVVvBjac8D3i7Q78Tcty2goURxHOk9hJ/XLTTW+zxnFmsNfRcySb6C02RBObqD7JX05PIPuElrFt1ZcF1jsNZn3Bf/26CrtdeQpolpFPZhONlvSjXvv+Me8X0IhEafCbHBbsFNBERnSNeIecJoDce53rnN6gNgGc5zQ4pYvcJbgMp/l4dhfSRaRBc0nF6K78XZafUddWkergXwNG8MKcoEb6t5O4g55WyGTTZ5o6U/2kG7KoT5OER0hfFGoV1uKUVu7Nc1G18KOoyUhf9otRYW08IxO1n5H4AZOzmVo84vlsrq5aXt/aESqBQd+c1VkrG+QknjH6FBWXcYud1hN+JXRIZsZSLyMsnfk2XciVv4Vb+kJ943Fb86oKBHFbPPV0kODKDFqi4vb5ZSS5nHCRKtZ+ABUy4sRsb7DTNcvPbFXydxf9HJ+YdSAakEl/6HfOBkzqlKDene0URPlfx5EMQUPTyw+c1zJ28TrKEYFh9CIR7fu7GUro/HiFZMH/2DvZA4/eaOci5vHeWPoiuj84nAk8mX9NdgxN5ycnsZUOK6W5MuhcjnXjjMfJbwk29gn/5beiwG/LnlOggtoBRYt3QY0Gt4nYdZZ1oly9Ur/IlRcNvvI/DSWfaZ6MYOXzCxUTL9eUUT3x+buC/Ho5gSfM3h3SVU4j0K1tK1w8CjM4fQaiAIMtYje1008mc9ybtXz25EuTCyP5FDU9yLw4p4FfKautn4avhPblqGllz4oaG5S9dWZIBIfzmL1ThHoRfWFbuDYWSsk8GFc1h4nhGfbbgDnEHxOHZMhPDM4OSNbWF9zrkRspNGqDhBEn8BQbRbs9AJC4z+oyES+2JI/3S1j8gTp6UliEiE6RKFIcGgdLyGVlvX3gNY6WZWIMQOxRwHMOmppoMV68rN2x6A809+fyHH+djDINCYivBbeB1oZDqP9hQxFEcOeH0cByTSFF7TwfJwOfXDoLKj3aoS3sqIrni62lNRsRajPQ/Wo8sxhz5sK484pubrlKdh0cSjeBWB/2aRQFAGIcR4jQclYMiI9evFrq826A/HoLp6K6KKyBMA545ICQpd7FiRaqKd1WzRwQVJEI+TboNFDCYTTKs35+2ehL5+i5rmJaeISfDWCpST1+129uAj8lg4vKEPPpv1VknE3r8VvsVKborAfgCgaH+yMG0wcNcmtrzO29pqXKL2IBW8Oixc+VIFiV16wbVHDvck+C3TyLqOsJK8vcSLIyUUvAYzUcgnT","n":310000};
+try{await sendSOS(fd.get('message')||"(без текста)");$('form').style.display='none';$('ok').style.display='block';}
+catch(x){b.disabled=false;$('err').innerHTML='Не удалось отправить. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо</a>.';}};
+const P={"s":"0MIhV3UXWclLiZMquHlKnA==","i":"QbX9ovo7SpzNcDJq","c":"6yUSxdlVJOuOrY/0YVOvRC7PxRLok6XVCJSwBsmUYc0rNGGdMKd6YLNvIoyFyHF+5NuZcW4oqx/Gj9I/eoFgdQ3yc9RDoqtSpqVJrqvFB+uFnwOg5bY1SoRxg00uxRhasy+/dCVgJFx7XgOy3VhPOJ0aMqVbXpvt8pgK1t0MpkVV/sluyBkdweFqxFPlbTWzWtHXYGuFyj0Vs40XRDJqe1/ZZrk11wtEEr7nVhZqt9gnBGC+owcxB2AK34KNksD9DrPYoLeGCqAN0IrCupHwBsLqbk3UvV+YY5CnwoN41uSEuHGWeiAnePIXprAEPOMOlbvQr+OQLpZudsFdT4NnDnJiq2BEOhcf8QXqDf4htc+ox2ZAh/FOEYYbNmGwKF8TdNV/mkmUrzeY8HkbCLktLVrnXxAVNCCPZgXD5E/bZxu+aSTXzISqgVCa3+jrXqjw4Yp7xLI9SVmhoaRoUzA0FAiv6h1FOtSRzA8LNdGYB9oBA0U5tLKHltFp35jL64bZ2Jo2tRc4lmCicE1J1p3NR0qUG/4ZMJv0X8NM8VmrAdztWU43zJdvk4d9r8lBiUmcuAmLnYtu3KH7VFi0r6rsGwuvSulZmOr5JpsBVlC0keECxLvw1ZSZxHtHndRBGqzHzwIThgUVm1QJPKaJMBCYnDXjY/mObCdIkUqYMPQuBSBZBP5/H+DAqWwCcKr3p41nI2yMG64hgkD5PdDpHMq+I81/KcZINAjchKgkIpzSaM8uiEsPPjD+upT0cqFZRHDHxGYQtzrcb29T+9otXl2xGUfUXQfcx8smfuAxwuw0IMJdiyc95nQkEQEu6jsY1fNsvl70uvf6vmOTuKSi6jmpFFzx6YNx6QQDR6CmYmvfHPqiPIyvwuoXD67MeZ4cdKPoEvUjlmDFLhxKzoIauo7wbwT7JpCiesZrsVlphkLjaliSrohM5yzTUSs7tiNp+SjkpuappjZ5IqaZZYPtMcSBYb/3WImvpQebacyZBJcQRP03t45LJNf/76G5OjCFfNgFOLlHRWmzuXCMHZ/030usnjF0AVgyMPvi4zJL4YKhwG/+0ygTtScJiR1Qn5Aq0U+JrPuAENzpGjJptD81dAozR8F1NOUudCczmbnxoarxxAGHCc/t7QmfZLLw75jyQVt0z6uITfdMVtxqEyhI/W+hAdsWOLT9TyYOCDqKX6f1MjHoDC+OVXJA06YiQplG1494cKa1txqDvVY06/vDJQcI7rqf/XIIK/KeNrbPb/QL2VKQHpCDSBqBU1uSDoOFAq4FdXVBhLWY6OYxvPsit7ZaVP3qTk61GKF/BbDRDstC5C5pQEX881vQYEI1piDqQr5seHYb","n":310000};
 const u=x=>Uint8Array.from(atob(x),ch=>ch.charCodeAt(0));
-document.getElementById('lk').onsubmit=async e=>{e.preventDefault();const pe=document.getElementById('pe');pe.textContent='';
-try{const k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(document.getElementById('pw').value),'PBKDF2',false,['deriveKey']);
+$('lk').onsubmit=async e=>{e.preventDefault();$('pe').textContent='';$('lb').disabled=true;let pt;
+try{const k0=await crypto.subtle.importKey('raw',new TextEncoder().encode($('pw').value),'PBKDF2',false,['deriveKey']);
 const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:u(P.s),iterations:P.n,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);
-const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u(P.i)},k,u(P.c));
-document.getElementById('ac').innerHTML=new TextDecoder().decode(pt);document.getElementById('lk').style.display='none';}
-catch(x){pe.textContent='Неверный пароль';}};
+pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u(P.i)},k,u(P.c));}
+catch(x){$('lb').disabled=false;$('pe').textContent='Неверный пароль';return;}
+$('ac').innerHTML=new TextDecoder().decode(pt);$('lock').style.display='none';
+$('st').textContent='Отправляем сигнал SOS помощнику Евгения…';
+try{await sendSOS("Архив открыт по паролю (QR)");$('st').textContent='✅ Сигнал SOS отправлен помощнику Евгения.';}
+catch(x){$('st').innerHTML='⚠️ Сигнал SOS не отправился. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо с темой SOS</a>.';}};
 </script></main></body></html>
