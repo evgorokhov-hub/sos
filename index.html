@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>SOS — Евгений Горохов</title>
-<style>body{margin:0;font-family:system-ui,sans-serif;background:#fff;color:#111;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}main{width:100%;max-width:480px;padding:24px}h1{font-size:1.4em}textarea{width:100%;box-sizing:border-box;font-size:1.1em;padding:12px;border:2px solid #ccc;border-radius:10px;min-height:110px}#sos{width:220px;height:220px;border-radius:50%;border:0;background:#d00;color:#fff;font-size:3.2em;font-weight:800;margin:24px auto;display:block;box-shadow:0 6px 20px rgba(200,0,0,.4)}#sos:disabled{opacity:.6}.hp{position:absolute;left:-9999px}#ok{display:none}#ok h1{color:#080;font-size:1.8em}.fb{font-size:.95em;color:#555}a{color:#d00}</style></head><body><main>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:#fff;color:#111;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}main{width:100%;max-width:480px;padding:24px}h1{font-size:1.4em}textarea{width:100%;box-sizing:border-box;font-size:1.1em;padding:12px;border:2px solid #ccc;border-radius:10px;min-height:110px}#sos{width:220px;height:220px;border-radius:50%;border:0;background:#d00;color:#fff;font-size:3.2em;font-weight:800;margin:24px auto;display:block;box-shadow:0 6px 20px rgba(200,0,0,.4)}#sos:disabled{opacity:.6}.hp{position:absolute;left:-9999px}#ok{display:none}#ok h1{color:#080;font-size:1.8em}.fb{font-size:.95em;color:#555}a{color:#d00}#arch{display:none;text-align:left;margin-top:20px;border:2px solid #ccc;border-radius:10px;padding:16px}#arch .big{display:block;text-align:center;background:#d00;color:#fff;text-decoration:none;font-size:1.3em;font-weight:700;padding:16px;border-radius:10px;margin-bottom:12px}#arch ol{padding-left:20px;margin:0}#arch li{margin:6px 0}</style></head><body><main>
 <div id="form"><h1>Экстренный сигнал для помощника Евгения</h1>
 <form id="f"><textarea name="message" placeholder="Что случилось / кто вы (необязательно)"></textarea>
 <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off">
@@ -7,11 +7,19 @@
 <p id="err" style="color:#d00"></p>
 <p class="fb">Если кнопка не работает: <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">написать письмо с темой SOS</a></p></div>
 <div id="ok"><h1>Сигнал отправлен</h1><p>Помощник Евгения уже действует.</p></div>
+<div id="arch"><a class="big" href="https://drive.google.com/drive/folders/1Zo5sgQyjQ8QE59TzeMTMJh6Fc9T_XPsm" target="_blank" rel="noopener">Открыть семейный архив</a><ol>
+<li>Войдите в Google под своим аккаунтом, доступ есть только у семьи.</li>
+<li>Скачайте все 21 файл SOS_family_archive.7z.001…021 в одну папку (можно целиком папку через «Скачать»).</li>
+<li>Установите <a href="https://www.7-zip.org/" target="_blank" rel="noopener">7-Zip</a> или на Mac <a href="https://www.keka.io/" target="_blank" rel="noopener">Keka</a>.</li>
+<li>Откройте файл .001 и введите пароль, который вам сообщил Евгений.</li>
+<li>Сначала откройте 00_ИНСТРУКЦИЯ_ПАРОЛИ.png и 00_ОГЛАВЛЕНИЕ.md.</li></ol></div>
 <script>
+
 document.getElementById('f').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('sos');b.disabled=true;
 const fd=new FormData(e.target);if(fd.get('botcheck'))return;
 const d={_subject:"SOS",_template:"table",_captcha:"false",message:fd.get('message')||"(без текста)",page_time:new Date().toString()};
 try{const r=await fetch("https://formsubmit.co/ajax/evgorokhov@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});const j=await r.json();
-if(j.success===true||j.success==="true"){document.getElementById('form').style.display='none';document.getElementById('ok').style.display='block';}else throw 0;}
-catch(x){b.disabled=false;document.getElementById('err').innerHTML='Не удалось отправить. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо</a>.';}};
+if(j.success===true||j.success==="true"){document.getElementById('form').style.display='none';document.getElementById('ok').style.display='block';showArch('ok');}else throw 0;}
+catch(x){b.disabled=false;document.getElementById('err').innerHTML='Не удалось отправить. <a href="mailto:gorokhov@mail.grokbot.com?subject=SOS">Отправьте письмо</a>.';showArch('form');}};
+function showArch(id){const a=document.getElementById('arch');document.getElementById(id).appendChild(a);a.style.display='block';}
 </script></main></body></html>
